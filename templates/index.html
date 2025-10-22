@@ -1,9 +1,503 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Hello World</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VORTEX AERO — Floating HySpexBot</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#031428;
+      --panel:#071833;
+      --muted:#7fb3d5;
+      --accent:#39d6ff;
+      --accent-2:#4bf1a6;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02);
+      --glass-border: rgba(255,255,255,0.06);
+      --glow: 0 6px 30px rgba(57,214,255,0.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Open Sans",system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(6,30,50,0.5), transparent 8%),
+                  linear-gradient(180deg,#011423 0%, #032033 60%, #02121a 100%);
+      color:#e6f7ff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* top nav */
+    header{
+      position:fixed;left:0;right:0;top:0;z-index:50;
+      display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border-bottom:1px solid var(--glass-border);
+      backdrop-filter: blur(6px);
+    }
+    .logo{
+      display:flex;align-items:center;gap:12px;
+      color:var(--accent);
+      text-decoration:none;
+    }
+    .logo .mark{
+      width:48px;height:48px;border-radius:50%;
+      background: conic-gradient(from 180deg, rgba(57,214,255,0.32), rgba(75,241,166,0.2), rgba(57,214,255,0.12));
+      display:flex;align-items:center;justify-content:center;
+      box-shadow: var(--glow);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .logo h1{font-family: 'Orbitron', sans-serif; font-size:1.05rem;margin:0;letter-spacing:0.06em}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{color:rgba(230,247,255,0.8);text-decoration:none;font-weight:600;font-size:0.92rem;padding:6px 10px;border-radius:8px}
+    nav a:hover{background:var(--glass);color:var(--accent)}
+    .cta{background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#011423;padding:8px 12px;border-radius:10px;font-weight:700}
+
+    /* hero */
+    .hero{
+      min-height:62vh;
+      display:flex;align-items:center;gap:36px;padding:120px 60px 48px 60px;
+    }
+    .hero-left{flex:1;max-width:720px}
+    .kicker{display:inline-block;padding:6px 10px;border-radius:10px;background:linear-gradient(90deg, rgba(75,241,166,0.06), rgba(57,214,255,0.04)); color:var(--muted); font-weight:600;margin-bottom:14px}
+    h2{font-family:'Orbitron',sans-serif;font-size:48px;line-height:1.02;margin:6px 0 12px;color:linear-gradient(#39d6ff,#4bf1a6)}
+    h2 .glow{color:var(--accent);text-shadow: 0 6px 26px rgba(57,214,255,0.08)}
+    p.lead{color:rgba(230,247,255,0.85);font-size:1.05rem;margin-bottom:18px}
+    .hero-cta{display:flex;gap:12px;align-items:center;margin-top:18px}
+    .btn{padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--accent);font-weight:700;cursor:pointer}
+    .btn.secondary{color:#e6f7ff;background:rgba(255,255,255,0.03)}
+    .tagline{margin-top:24px;color:rgba(180,230,255,0.6);font-size:0.92rem}
+
+    /* hero right: vortex canvas */
+    .hero-right{width:480px;height:420px;display:flex;align-items:center;justify-content:center;position:relative}
+    .vortex-canvas{width:420px;height:420px;border-radius:18px;background:linear-gradient(180deg, rgba(7,24,51,0.4), rgba(3,20,36,0.25));box-shadow:var(--glow);border:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+    .vortex-title{position:absolute;bottom:18px;left:18px;font-family:'Orbitron',sans-serif;color:var(--accent);font-size:0.9rem;letter-spacing:0.08em}
+
+    /* content area */
+    main{padding:32px 60px 80px}
+    .grid{display:grid;grid-template-columns: 1fr 360px;gap:28px;align-items:start}
+
+    /* cards / panels */
+    .panel{background:linear-gradient(180deg,var(--panel), rgba(255,255,255,0.02));border-radius:14px;padding:18px;border:1px solid var(--glass-border);box-shadow: 0 8px 40px rgba(2,10,22,0.45)}
+    h3{font-family:'Orbitron',sans-serif;color:var(--accent);margin:0 0 12px;font-size:1rem}
+    .muted{color:rgba(230,247,255,0.65);font-size:0.95rem}
+    .list{margin:10px 0 0;padding:0;list-style:none}
+    .list li{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02);color:rgba(220,240,255,0.9)}
+
+    /* accordion */
+    .accordion{margin-top:12px}
+    .accordion button{
+      width:100%;text-align:left;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);
+      background:linear-gradient(90deg, rgba(255,255,255,0.01), transparent);color:var(--muted);font-weight:700;cursor:pointer;
+    }
+    .panel-body{padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));margin-top:10px;border-radius:10px;display:none;color:rgba(220,240,255,0.92);line-height:1.5;font-size:0.95rem}
+
+    /* flowchart */
+    .flow{
+      display:flex;gap:10px;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    }
+    .flow .step{
+      flex:1;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.03);
+      display:flex;flex-direction:column;align-items:center;gap:8px;min-width:120px;
+    }
+    .chip{width:68px;height:68px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(57,214,255,0.08), rgba(75,241,166,0.03));border:1px solid rgba(255,255,255,0.03);font-weight:700;color:var(--accent)}
+
+    /* right column smaller cards */
+    .stat{display:flex;gap:12px;align-items:center}
+    .stat .icon{width:48px;height:48px;border-radius:10px;background:linear-gradient(180deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#011423;font-weight:800}
+    .small-list{display:flex;flex-direction:column;gap:8px}
+
+    /* footer */
+    footer{padding:28px 60px;border-top:1px solid rgba(255,255,255,0.02);color:rgba(200,235,255,0.6);display:flex;justify-content:space-between;align-items:center}
+    footer .tag{font-weight:700;color:var(--accent)}
+
+    /* responsive */
+    @media (max-width:980px){
+      .hero{flex-direction:column;padding:120px 24px 24px}
+      .hero-right{width:100%;height:320px}
+      .grid{grid-template-columns:1fr;gap:18px}
+      header{padding:12px 18px}
+    }
+
+    /* subtle animations */
+    .fade-in{opacity:0;transform:translateY(8px);animation:fadeIn 0.9s ease forwards}
+    @keyframes fadeIn{to{opacity:1;transform:none}}
+
+    /* vortex particle styles - particles will be injected by JS */
+    .particle{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(57,214,255,0.92);box-shadow:0 0 12px rgba(57,214,255,0.12);opacity:0.95}
+    .particle.alt{background:rgba(75,241,166,0.92);box-shadow:0 0 12px rgba(75,241,166,0.12)}
+
+    /* small code block style */
+    pre{background:rgba(0,0,0,0.25);padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02);font-size:0.9rem}
+  </style>
 </head>
 <body>
-    <h1>This Webpage is <b>Under development</b></h1>
+
+  <header>
+    <a class="logo" href="#">
+      <div class="mark" aria-hidden>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C10 6 7 6 4 8C1 10 1 14 3 17C5 20 9 21 12 22C15 21 19 20 21 17C23 14 23 10 20 8C17 6 14 6 12 2Z" fill="white" opacity="0.08"/>
+          <circle cx="12" cy="10" r="3.2" fill="#39d6ff"/>
+        </svg>
+      </div>
+      <h1>VORTEX AERO</h1>
+    </a>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#ml">ML & Data</a>
+      <a href="#business">Business</a>
+      <a class="cta" href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left fade-in" style="animation-delay:.1s">
+      <div class="kicker">Project • Floating HySpexBot</div>
+      <h2><span class="glow">VORTEX AERO</span> — Intelligent Floating Monitor</h2>
+      <p class="lead">A compact, solar-assisted, AI-powered floating robot that detects algae (chlorophyll) and floating plastics in rivers, estuaries and nearshore zones — delivering real-time maps, alerts, and open datasets for research & action.</p>
+
+      <div class="hero-cta">
+        <button class="btn" onclick="document.querySelector('#overview').scrollIntoView({behavior:'smooth'})">Explore Project</button>
+        <button class="btn secondary" onclick="downloadBrief()">Download Brief</button>
+      </div>
+
+      <div class="tagline">“AI for a Sustainable Blue Planet” — <span style="color:var(--muted)">real-time, reliable, and affordable.</span></div>
+    </div>
+
+    <div class="hero-right fade-in" style="animation-delay:.2s">
+      <div class="vortex-canvas" id="vortex">
+        <!-- particles added by JS -->
+        <div class="vortex-title">VORTEX AERO</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="grid">
+      <div>
+        <!-- Overview -->
+        <section id="overview" class="panel fade-in" style="animation-delay:.3s">
+          <h3>Overview</h3>
+          <p class="muted">Floating HySpexBot (VORTEX AERO) is designed to fill the gap between satellite sensing and manual sampling. It offers a mobile, scalable, and AI-driven approach for nearshore water quality monitoring and plastic detection.</p>
+
+          <div class="accordion">
+            <button onclick="togglePanel(this)">Quick Summary</button>
+            <div class="panel-body">
+              <strong>What it does:</strong> Measures chlorophyll, turbidity, and detects floating plastics. <br>
+              <strong>Why:</strong> Early detection of algae blooms and plastic hotspots prevents ecosystem damage. <br>
+              <strong>Where:</strong> Rivers, estuaries, lakes, and coastal nearshore zones. <br>
+              <strong>Who benefits:</strong> Governments, research institutions, NGOs, aquaculture operators, and local communities.
+            </div>
+
+            <button onclick="togglePanel(this)">Key Features</button>
+            <div class="panel-body">
+              - Hyperspectral sensing (400–1000 nm).<br>
+              - Short-range acoustic backscatter for turbid conditions.<br>
+              - Edge AI on Jetson Nano for real-time inference.<br>
+              - Solar-assisted battery with energy-aware sensor sequencing.<br>
+              - Cloud dashboard, map tiles, and alerting via MQTT/HTTP.
+            </div>
+          </div>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="panel fade-in" style="animation-delay:.35s;margin-top:18px">
+          <h3>System Architecture</h3>
+          <p class="muted">A layered design ensures modularity and reliability: Hardware → Edge Compute → Data Fusion → Cloud & Dashboard.</p>
+
+          <div style="margin-top:12px" class="flow">
+            <div class="step">
+              <div class="chip">Sensors</div>
+              <div class="muted">Hyperspectral, Acoustic, Turbidity, GPS</div>
+            </div>
+            <div style="width:36px;text-align:center;color:var(--muted)">➡</div>
+            <div class="step">
+              <div class="chip">Jetson</div>
+              <div class="muted">Edge inference, fusion, telemetry</div>
+            </div>
+            <div style="width:36px;text-align:center;color:var(--muted)">➡</div>
+            <div class="step">
+              <div class="chip">Cloud</div>
+              <div class="muted">Storage, Dashboard, APIs</div>
+            </div>
+            <div style="width:36px;text-align:center;color:var(--muted)">➡</div>
+            <div class="step">
+              <div class="chip">Alerts</div>
+              <div class="muted">Maps, Notifications, CSV/GeoTIFF</div>
+            </div>
+          </div>
+
+          <h3 style="margin-top:16px">Block Diagram</h3>
+          <div style="padding:10px;border-radius:8px;background:var(--glass-2);border:1px solid rgba(255,255,255,0.02)">
+            <!-- Simple svg block diagram -->
+            <svg width="100%" height="220" viewBox="0 0 1000 220" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#39d6ff"/><stop offset="1" stop-color="#4bf1a6"/></linearGradient>
+              </defs>
+              <rect x="30" y="30" width="220" height="140" rx="12" fill="#022033" stroke="rgba(255,255,255,0.04)"/>
+              <text x="140" y="58" text-anchor="middle" fill="#9fe9ff" font-weight="700" font-size="14">Sensors</text>
+              <text x="140" y="82" fill="#cfeffb" font-size="12" text-anchor="middle">Hyperspectral • Acoustic • GPS</text>
+
+              <rect x="300" y="30" width="220" height="140" rx="12" fill="#022033" stroke="rgba(255,255,255,0.04)"/>
+              <text x="410" y="58" text-anchor="middle" fill="#9fe9ff" font-weight="700" font-size="14">Edge Compute</text>
+              <text x="410" y="82" fill="#cfeffb" font-size="12" text-anchor="middle">Jetson Nano • ML • Fusion</text>
+
+              <rect x="570" y="30" width="220" height="140" rx="12" fill="#022033" stroke="rgba(255,255,255,0.04)"/>
+              <text x="680" y="58" text-anchor="middle" fill="#9fe9ff" font-weight="700" font-size="14">Cloud & Dashboard</text>
+              <text x="680" y="82" fill="#cfeffb" font-size="12" text-anchor="middle">Storage • Maps • APIs</text>
+
+              <path d="M250 100 L300 100" stroke="url(#g1)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M520 100 L570 100" stroke="url(#g1)" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </section>
+
+        <!-- ML & Data -->
+        <section id="ml" class="panel fade-in" style="animation-delay:.4s;margin-top:18px">
+          <h3>ML & Data</h3>
+          <p class="muted">Edge-first ML pipeline: preprocess → feature extraction → fusion → inference. Models run on Jetson and are optimized via TensorRT for speed and low power.</p>
+
+          <div class="accordion">
+            <button onclick="togglePanel(this)">Data Sources</button>
+            <div class="panel-body">
+              - Hyperspectral spectra (400–1000 nm), resampled to fixed band vectors.<br>
+              - Acoustic features from short-range ping echoes.<br>
+              - Environmental metadata: turbidity, water temperature, sun angle.<br>
+              - Ground truth: lab-measured chlorophyll and FTIR polymer IDs.
+            </div>
+
+            <button onclick="togglePanel(this)">Model Design</button>
+            <div class="panel-body">
+              - OpticalNet: 1D conv / MLP for spectral features.<br>
+              - AcousticNet: small MLP for echo features.<br>
+              - Fusion layer: attention-based reweighting conditioned on turbidity & sun-angle.<br>
+              - Output: classification (plastic type) + regression (chlorophyll mg/m³).
+            </div>
+
+            <button onclick="togglePanel(this)">Synthetic Dataset</button>
+            <div class="panel-body">
+              A synthetic data generator helps bootstrap training with simulated spectra across turbidity and illumination conditions. Models are then fine-tuned with small in-situ labeled datasets for robust generalization.
+            </div>
+          </div>
+        </section>
+
+        <!-- Business & Impact -->
+        <section id="business" class="panel fade-in" style="animation-delay:.45s;margin-top:18px">
+          <h3>Business Model & Impact</h3>
+          <p class="muted">Our revenue and impact model focuses on data services, fleet leasing, and partnerships for environmental monitoring.</p>
+
+          <ul class="list">
+            <li><strong>DaaS (Data-as-a-Service):</strong> subscription to live maps, alerts and historical analytics.</li>
+            <li><strong>HaaS (Hardware-as-a-Service):</strong> deploy & maintain fleets for governments, aquaculture and NGOs.</li>
+            <li><strong>Calibration & Consulting:</strong> satellite validation and targeted studies for clients.</li>
+            <li><strong>Open Research Tier:</strong> free or low-cost access to academic institutions to foster research and goodwill.</li>
+          </ul>
+
+          <div style="margin-top:12px">
+            <strong>Social Impact:</strong> better pollution response, healthier fisheries, safer drinking water, and empowered local communities with actionable data.
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Right column -->
+      <aside>
+        <div class="panel fade-in" style="animation-delay:.32s">
+          <h3>Prototype Snapshot</h3>
+          <div class="stat" style="margin:10px 0">
+            <div class="icon">🧠</div>
+            <div>
+              <div style="font-weight:700">Jetson Nano</div>
+              <div class="muted">Edge ML / inference</div>
+            </div>
+          </div>
+          <div class="stat" style="margin:10px 0">
+            <div class="icon">🔬</div>
+            <div>
+              <div style="font-weight:700">Hyperspectral</div>
+              <div class="muted">400–1000 nm reflectance</div>
+            </div>
+          </div>
+          <div class="stat" style="margin:10px 0">
+            <div class="icon">📡</div>
+            <div>
+              <div style="font-weight:700">Comm</div>
+              <div class="muted">MQTT / 4G / WiFi</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel fade-in small-list" style="margin-top:18px;animation-delay:.36s">
+          <h3>Bill of Materials (Prototype)</h3>
+          <div class="muted" style="font-size:0.95rem">
+            <ul style="margin:8px 0 0 16px">
+              <li>Jetson Nano (4GB)</li>
+              <li>Mini hyperspectral spectrometer</li>
+              <li>Acoustic transducer + ADC</li>
+              <li>u-blox GPS, IMU</li>
+              <li>LiPo battery + solar panels</li>
+              <li>Hull & catamaran frame</li>
+            </ul>
+            <div style="margin-top:8px;font-weight:700">Prototype cost estimate: <span style="color:var(--accent)">₹40k–₹80k</span></div>
+          </div>
+        </div>
+
+        <div class="panel fade-in" style="margin-top:18px;animation-delay:.38s">
+          <h3>Timeline (MVP → Pilot)</h3>
+          <ol style="margin:8px 0 0 16px">
+            <li>0–3 months: design & bench tests</li>
+            <li>4–6 months: integration & controlled-field tests</li>
+            <li>7–9 months: model training & site validation</li>
+            <li>10–12 months: pilot deployment & first customers</li>
+          </ol>
+        </div>
+
+        <div class="panel fade-in" style="margin-top:18px;animation-delay:.40s">
+          <h3>Patent-safety Notes</h3>
+          <div class="muted" style="font-size:0.95rem">
+            Focus patent claims on specific method steps and the fusion/attention algorithm rather than broad concepts. Keep lab notebooks and dataset timestamps for proof of novelty.
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- deep-dive: technical content -->
+    <section class="panel fade-in" style="margin-top:22px;animation-delay:.46s">
+      <h3>Technical Deep-Dive (expandable)</h3>
+      <div class="accordion" style="margin-top:10px">
+        <button onclick="togglePanel(this)">Hardware Wiring & Power Management</button>
+        <div class="panel-body">
+          The electronics bay contains a 12.8V LiFePO4 battery connected to MPPT solar charge. Power rails: 5V (Jetson) via buck, 3.3V for sensors. MCU (STM32/ESP32) handles PWM for ESCs and ADC for acoustic. Use single-point grounding and shielded lines for acoustic analogs.
+        </div>
+
+        <button onclick="togglePanel(this)">Software Stack & Docker</button>
+        <div class="panel-body">
+          Ubuntu (JetPack) container with PyTorch/TensorRT, MQTT client, data ingestion daemon, and inference service. Models exported to TorchScript/ONNX and optimized for FP16. Use systemd / Docker for service management.
+        </div>
+
+        <button onclick="togglePanel(this)">ML Training Recipe</button>
+        <div class="panel-body">
+          Train optical networks on resampled 150-band vectors with turbidity augmentation. Combine acoustic features (peak, energy, width, slope) in fusion network. Loss: cross-entropy for classification + MSE for chlorophyll regression. Domain adapt with small in-situ fine-tuning.
+        </div>
+
+        <button onclick="togglePanel(this)">Field Calibration Protocol</button>
+        <div class="panel-body">
+          Pre-deployment: Spectralon white reference, dark current capture. In-field: collect paired water samples for lab Chl-a extraction (acetone method) and FTIR polymer ID. Record environmental meta (sun angle, wind, turbidity).
+        </div>
+      </div>
+    </section>
+
+    <!-- contact -->
+    <section id="contact" class="panel fade-in" style="margin-top:18px;animation-delay:.48s">
+      <h3>Get Involved</h3>
+      <p class="muted">Want the project files, synthetic dataset generator, Docker image, or PCB wiring diagram? Contact us and we’ll share repositories and step-by-step guides.</p>
+
+      <form onsubmit="event.preventDefault(); alert('Thanks — your interest is noted. (This demo form does not send data.)')">
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+          <input type="text" placeholder="Your name" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6f7ff">
+          <input type="email" placeholder="Email" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6f7ff">
+        </div>
+        <textarea placeholder="Message (optional)" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);height:88px;background:transparent;color:#e6f7ff"></textarea>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn" onclick="alert('Demo: files will be prepared upon request')">Request Files</button>
+          <button class="btn secondary" onclick="document.querySelector('html').scrollTo({top:0,behavior:'smooth'})">Back to top</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <footer>
+    <div>© <span style="opacity:.9">VORTEX AERO</span> • <span class="tag">AI for a Sustainable Blue Planet</span></div>
+    <div style="opacity:.7">Made with care • Jetson Nano • Hyperspectral • Acoustic fusion</div>
+  </footer>
+
+  <script>
+    // small utilities
+    function togglePanel(btn){
+      const next = btn.nextElementSibling;
+      if(!next) return;
+      const shown = next.style.display === 'block';
+      next.style.display = shown ? 'none' : 'block';
+      btn.style.background = shown ? 'linear-gradient(90deg, rgba(255,255,255,0.01), transparent)' : 'linear-gradient(90deg, rgba(57,214,255,0.06), rgba(75,241,166,0.03))';
+      btn.style.color = shown ? 'var(--muted)' : '#011423';
+    }
+
+    // create vortex particles
+    (function createVortex(){
+      const box = document.getElementById('vortex');
+      if(!box) return;
+      const w = box.clientWidth, h = box.clientHeight;
+      const center = {x:w/2, y:h/2};
+
+      const PARTICLES = 28;
+      for(let i=0;i<PARTICLES;i++){
+        const el = document.createElement('div');
+        el.className = 'particle ' + (i%3===0 ? 'alt' : '');
+        box.appendChild(el);
+        animateParticle(el, i);
+      }
+
+      function animateParticle(el, idx){
+        const R = 120 + (idx%6)*6;
+        const speed = 7000 + Math.random()*7000;
+        const angleOffset = Math.random()*Math.PI*2;
+        const size = 4 + (idx%5);
+        el.style.width = size + 'px'; el.style.height = size + 'px';
+
+        let start = performance.now();
+        function frame(t){
+          const dt = (t - start);
+          const theta = (dt / speed) * Math.PI*2 + angleOffset;
+          const ease = (Math.sin(dt/700 + idx) + 1)/2 * 0.25 + 0.75;
+          const rx = R * (0.7 + 0.3 * Math.sin(dt/2000 + idx));
+          const x = center.x + Math.cos(theta) * rx * ease - size/2;
+          const y = center.y + Math.sin(theta) * (R*0.45) * ease - size/2;
+          el.style.transform = `translate(${x}px, ${y}px) scale(${0.8 + 0.4*Math.sin(dt/500 + idx)})`;
+          el.style.opacity = 0.5 + 0.5*Math.cos(dt/1300 + idx);
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+    })();
+
+    // download brief (generate a small text blob)
+    function downloadBrief(){
+      const text = `VORTEX AERO — Project Brief\n\nFloating HySpexBot: AI-powered floating platform for chlorophyll & plastic detection. Visit site for full details.`;
+      const blob = new Blob([text], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'VORTEX_AERO_brief.txt'; document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 3500);
+    }
+
+    // fade-in elements on load
+    window.addEventListener('load', ()=>{
+      document.querySelectorAll('.fade-in').forEach((el,i)=>{
+        el.style.animationDelay = (0.08*i)+'s';
+        el.style.animation = `fadeIn .9s ease forwards ${0.08*i}s`;
+      });
+    });
+
+    // smooth scroll for nav
+    document.querySelectorAll('nav a').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const href = a.getAttribute('href');
+        const el = document.querySelector(href);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+      });
+    });
+  </script>
+
 </body>
 </html>
