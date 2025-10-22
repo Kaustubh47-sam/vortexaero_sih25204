@@ -1,503 +1,745 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>VORTEX AERO — Floating HySpexBot</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VORTEX AERO — Floating HySpexBot</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#031428;
-      --panel:#071833;
-      --muted:#7fb3d5;
-      --accent:#39d6ff;
-      --accent-2:#4bf1a6;
-      --glass: rgba(255,255,255,0.04);
-      --glass-2: rgba(255,255,255,0.02);
-      --glass-border: rgba(255,255,255,0.06);
-      --glow: 0 6px 30px rgba(57,214,255,0.08);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"Open Sans",system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background: radial-gradient(1200px 800px at 10% 10%, rgba(6,30,50,0.5), transparent 8%),
-                  linear-gradient(180deg,#011423 0%, #032033 60%, #02121a 100%);
-      color:#e6f7ff;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+<style>
+  /* -------------------------
+     THEME COLORS & UTILS
+     ------------------------- */
+  :root{
+    --bg-1:#030617;
+    --bg-2:#051826;
+    --panel:#071833;
+    --muted:#9fdff6;
+    --accent:#39d6ff;
+    --accent-2:#6ef1b1;
+    --accent-3:#8a6bff;
+    --glass: rgba(255,255,255,0.04);
+    --glass-2: rgba(255,255,255,0.02);
+    --text:#e9fbff;
+    --success:#6ef1b1;
+    --danger:#ff6b6b;
+    --shadow: 0 12px 40px rgba(0,0,0,0.6);
+    --maxw:1200px;
+  }
+  /* Light theme variables (toggled) */
+  .light {
+    --bg-1:#f7fbff;
+    --bg-2:#e9f3ff;
+    --panel:rgba(255,255,255,0.9);
+    --glass: rgba(1,1,1,0.03);
+    --glass-2: rgba(1,1,1,0.02);
+    --text:#051424;
+    --shadow: 0 12px 40px rgba(5,10,20,0.06);
+  }
 
-    /* top nav */
-    header{
-      position:fixed;left:0;right:0;top:0;z-index:50;
-      display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-      border-bottom:1px solid var(--glass-border);
-      backdrop-filter: blur(6px);
-    }
-    .logo{
-      display:flex;align-items:center;gap:12px;
-      color:var(--accent);
-      text-decoration:none;
-    }
-    .logo .mark{
-      width:48px;height:48px;border-radius:50%;
-      background: conic-gradient(from 180deg, rgba(57,214,255,0.32), rgba(75,241,166,0.2), rgba(57,214,255,0.12));
-      display:flex;align-items:center;justify-content:center;
-      box-shadow: var(--glow);
-      border:1px solid rgba(255,255,255,0.03);
-    }
-    .logo h1{font-family: 'Orbitron', sans-serif; font-size:1.05rem;margin:0;letter-spacing:0.06em}
-    nav{display:flex;gap:18px;align-items:center}
-    nav a{color:rgba(230,247,255,0.8);text-decoration:none;font-weight:600;font-size:0.92rem;padding:6px 10px;border-radius:8px}
-    nav a:hover{background:var(--glass);color:var(--accent)}
-    .cta{background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#011423;padding:8px 12px;border-radius:10px;font-weight:700}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: radial-gradient(900px 500px at 10% 10%, rgba(3,20,40,0.6), transparent 10%), linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    color:var(--text);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    overflow-y:scroll;
+  }
 
-    /* hero */
-    .hero{
-      min-height:62vh;
-      display:flex;align-items:center;gap:36px;padding:120px 60px 48px 60px;
-    }
-    .hero-left{flex:1;max-width:720px}
-    .kicker{display:inline-block;padding:6px 10px;border-radius:10px;background:linear-gradient(90deg, rgba(75,241,166,0.06), rgba(57,214,255,0.04)); color:var(--muted); font-weight:600;margin-bottom:14px}
-    h2{font-family:'Orbitron',sans-serif;font-size:48px;line-height:1.02;margin:6px 0 12px;color:linear-gradient(#39d6ff,#4bf1a6)}
-    h2 .glow{color:var(--accent);text-shadow: 0 6px 26px rgba(57,214,255,0.08)}
-    p.lead{color:rgba(230,247,255,0.85);font-size:1.05rem;margin-bottom:18px}
-    .hero-cta{display:flex;gap:12px;align-items:center;margin-top:18px}
-    .btn{padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--accent);font-weight:700;cursor:pointer}
-    .btn.secondary{color:#e6f7ff;background:rgba(255,255,255,0.03)}
-    .tagline{margin-top:24px;color:rgba(180,230,255,0.6);font-size:0.92rem}
+  /* -------------------------
+     BOOT SCREEN (3-5s dramatic)
+     ------------------------- */
+  #boot {
+    position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,rgba(2,10,25,0.95),rgba(3,14,30,0.9));
+    color:var(--text);flex-direction:column;gap:18px;
+  }
+  #boot .ring{width:160px;height:160px;border-radius:50%;border:2px solid rgba(57,214,255,0.08);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 10px 60px rgba(57,214,255,0.06)}
+  #boot .ring::after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 16px var(--accent)}
+  #boot h1{font-family:'Orbitron',sans-serif;font-size:28px;letter-spacing:0.18em;color:var(--accent);text-shadow:0 8px 32px rgba(57,214,255,0.06)}
+  #boot p{opacity:.9;color:rgba(255,255,255,0.7)}
+  #boot .progress{width:360px;height:8px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden}
+  #boot .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;border-radius:8px;box-shadow:0 6px 26px rgba(57,214,255,0.08)}
+  /* subtle flicker */
+  @keyframes flick {0%{opacity:1}50%{opacity:0.85}100%{opacity:1}}
 
-    /* hero right: vortex canvas */
-    .hero-right{width:480px;height:420px;display:flex;align-items:center;justify-content:center;position:relative}
-    .vortex-canvas{width:420px;height:420px;border-radius:18px;background:linear-gradient(180deg, rgba(7,24,51,0.4), rgba(3,20,36,0.25));box-shadow:var(--glow);border:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-    .vortex-title{position:absolute;bottom:18px;left:18px;font-family:'Orbitron',sans-serif;color:var(--accent);font-size:0.9rem;letter-spacing:0.08em}
+  /* -------------------------
+     HEADER & NAV
+     ------------------------- */
+  header{position:fixed;top:18px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center;z-index:200}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    background:conic-gradient(from 140deg,var(--accent),var(--accent-2),var(--accent-3));box-shadow:0 8px 28px rgba(57,214,255,0.06);
+    border:1px solid rgba(255,255,255,0.06)
+  }
+  .brand h1{font-family:'Orbitron',sans-serif;font-size:18px;color:var(--accent);margin:0}
+  nav{display:flex;gap:12px;align-items:center}
+  nav a{color:var(--text);text-decoration:none;padding:8px 12px;border-radius:8px;font-weight:600}
+  nav a:hover{background:var(--glass)}
+  .controls{display:flex;gap:8px;align-items:center}
+  .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#022; border:none;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;color:var(--text);cursor:pointer}
 
-    /* content area */
-    main{padding:32px 60px 80px}
-    .grid{display:grid;grid-template-columns: 1fr 360px;gap:28px;align-items:start}
+  /* -------------------------
+    HERO / VORTEX ANIMATION
+     ------------------------- */
+  .hero{
+    min-height:84vh;padding-top:80px;display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:visible;margin-bottom:20px;
+  }
+  .hero-inner{max-width:var(--maxw);width:100%;display:grid;grid-template-columns:1fr 480px;gap:28px;align-items:center;padding:48px}
+  .hero-card{padding:28px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
+  .hero h2{font-family:'Orbitron',sans-serif;font-size:44px;margin:0 0 8px;color:var(--accent)}
+  .hero p.lead{color:rgba(255,255,255,0.9);font-size:1.02rem;margin-bottom:12px}
+  .hero .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .pill{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:600;color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
 
-    /* cards / panels */
-    .panel{background:linear-gradient(180deg,var(--panel), rgba(255,255,255,0.02));border-radius:14px;padding:18px;border:1px solid var(--glass-border);box-shadow: 0 8px 40px rgba(2,10,22,0.45)}
-    h3{font-family:'Orbitron',sans-serif;color:var(--accent);margin:0 0 12px;font-size:1rem}
-    .muted{color:rgba(230,247,255,0.65);font-size:0.95rem}
-    .list{margin:10px 0 0;padding:0;list-style:none}
-    .list li{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02);color:rgba(220,240,255,0.9)}
+  /* vortex canvas placeholder */
+  .vortex-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+  #vortexCanvas{width:420px;height:420px;border-radius:18px;background:linear-gradient(180deg,rgba(2,18,30,0.6),rgba(3,14,22,0.3));box-shadow:0 18px 80px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.03);overflow:hidden;display:block}
+  .vortex-label{position:absolute;bottom:18px;left:20px;color:var(--accent);font-family:'Orbitron';letter-spacing:0.08em}
 
-    /* accordion */
-    .accordion{margin-top:12px}
-    .accordion button{
-      width:100%;text-align:left;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);
-      background:linear-gradient(90deg, rgba(255,255,255,0.01), transparent);color:var(--muted);font-weight:700;cursor:pointer;
-    }
-    .panel-body{padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));margin-top:10px;border-radius:10px;display:none;color:rgba(220,240,255,0.92);line-height:1.5;font-size:0.95rem}
+  /* letter animation container */
+  .vortex-title-wrap{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap}
+  .v-letter{
+    font-family:'Orbitron';font-size:42px;color:transparent;-webkit-text-stroke:1px rgba(57,214,255,0.9);text-shadow:0 6px 26px rgba(57,214,255,0.06);
+    display:inline-block;padding:6px;border-radius:6px;backdrop-filter:blur(6px);
+    transform-origin:center;
+  }
+  .subtitle{color:rgba(255,255,255,0.8);margin-top:8px}
 
-    /* flowchart */
-    .flow{
-      display:flex;gap:10px;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-    }
-    .flow .step{
-      flex:1;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.03);
-      display:flex;flex-direction:column;align-items:center;gap:8px;min-width:120px;
-    }
-    .chip{width:68px;height:68px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(57,214,255,0.08), rgba(75,241,166,0.03));border:1px solid rgba(255,255,255,0.03);font-weight:700;color:var(--accent)}
+  /* -------------------------
+     CONTENT SECTIONS
+     ------------------------- */
+  main{padding:40px 28px 80px;max-width:var(--maxw);margin:0 auto;min-height:40vh}
+  .section{margin:26px 0;padding:20px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.03)}
+  .section h3{font-family:'Orbitron';color:var(--accent);margin:0 0 10px}
+  .muted{color:rgba(255,255,255,0.75)}
+  .two-col{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+  .card{padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent);border:1px solid rgba(255,255,255,0.02)}
+  .list{list-style:none;padding-left:0}
+  .list li{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02)}
 
-    /* right column smaller cards */
-    .stat{display:flex;gap:12px;align-items:center}
-    .stat .icon{width:48px;height:48px;border-radius:10px;background:linear-gradient(180deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#011423;font-weight:800}
-    .small-list{display:flex;flex-direction:column;gap:8px}
+  /* accordions */
+  .accordion .acc-btn{width:100%;text-align:left;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);font-weight:700;cursor:pointer;margin-top:8px}
+  .acc-body{padding:12px;margin-top:8px;border-radius:10px;background:rgba(255,255,255,0.01);display:none;color:rgba(255,255,255,0.95);line-height:1.5}
 
-    /* footer */
-    footer{padding:28px 60px;border-top:1px solid rgba(255,255,255,0.02);color:rgba(200,235,255,0.6);display:flex;justify-content:space-between;align-items:center}
-    footer .tag{font-weight:700;color:var(--accent)}
+  /* downloads area */
+  .downloads{display:flex;gap:12px;flex-wrap:wrap}
+  .asset{padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);display:flex;gap:10px;align-items:center}
 
-    /* responsive */
-    @media (max-width:980px){
-      .hero{flex-direction:column;padding:120px 24px 24px}
-      .hero-right{width:100%;height:320px}
-      .grid{grid-template-columns:1fr;gap:18px}
-      header{padding:12px 18px}
-    }
+  /* floating particles (background) */
+  .particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .particle{position:absolute;border-radius:50%;opacity:0.12;filter:blur(6px)}
 
-    /* subtle animations */
-    .fade-in{opacity:0;transform:translateY(8px);animation:fadeIn 0.9s ease forwards}
-    @keyframes fadeIn{to{opacity:1;transform:none}}
+  /* footer */
+  footer{padding:24px;text-align:center;color:rgba(255,255,255,0.7)}
 
-    /* vortex particle styles - particles will be injected by JS */
-    .particle{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(57,214,255,0.92);box-shadow:0 0 12px rgba(57,214,255,0.12);opacity:0.95}
-    .particle.alt{background:rgba(75,241,166,0.92);box-shadow:0 0 12px rgba(75,241,166,0.12)}
+  /* responsiveness */
+  @media (max-width:1100px){
+    .hero-inner{grid-template-columns:1fr;gap:20px}
+    .two-col{grid-template-columns:1fr}
+  }
 
-    /* small code block style */
-    pre{background:rgba(0,0,0,0.25);padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02);font-size:0.9rem}
-  </style>
+  /* tiny helpers */
+  .code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;background:rgba(0,0,0,0.2);padding:6px;border-radius:6px;color:var(--accent-2)}
+  .muted-small{color:rgba(255,255,255,0.6);font-size:0.92rem}
+</style>
 </head>
 <body>
 
+  <!-- BOOT SCREEN -->
+  <div id="boot" role="dialog" aria-label="Boot screen">
+    <div class="ring" id="bootRing"></div>
+    <h1>VORTEX AERO — initializing</h1>
+    <p>Edge AI · Hyperspectral · Acoustic Fusion · Live Telemetry</p>
+    <div class="progress"><i id="bootBar"></i></div>
+  </div>
+
+  <!-- Header -->
   <header>
-    <a class="logo" href="#">
-      <div class="mark" aria-hidden>
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C10 6 7 6 4 8C1 10 1 14 3 17C5 20 9 21 12 22C15 21 19 20 21 17C23 14 23 10 20 8C17 6 14 6 12 2Z" fill="white" opacity="0.08"/>
-          <circle cx="12" cy="10" r="3.2" fill="#39d6ff"/>
+    <div class="brand">
+      <div class="logo" aria-hidden>
+        <svg viewBox="0 0 48 48" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#39d6ff"/><stop offset="1" stop-color="#4bf1a6"/></linearGradient></defs>
+          <rect x="4" y="4" width="40" height="40" rx="8" fill="url(#lg)"/>
+          <circle cx="24" cy="20" r="6" fill="#02121a" opacity="0.85"/>
         </svg>
       </div>
-      <h1>VORTEX AERO</h1>
-    </a>
+      <div>
+        <h1>VORTEX AERO</h1>
+        <div class="muted-small">AI for a Sustainable Blue Planet</div>
+      </div>
+    </div>
+
     <nav>
       <a href="#overview">Overview</a>
-      <a href="#architecture">Architecture</a>
+      <a href="#tech">Technical</a>
       <a href="#ml">ML & Data</a>
       <a href="#business">Business</a>
-      <a class="cta" href="#contact">Contact</a>
+      <a href="#contact" class="ghost">Contact</a>
+      <div style="width:8px"></div>
+      <button id="themeToggle" class="ghost" title="Toggle Light/Dark">🌗</button>
     </nav>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-left fade-in" style="animation-delay:.1s">
-      <div class="kicker">Project • Floating HySpexBot</div>
-      <h2><span class="glow">VORTEX AERO</span> — Intelligent Floating Monitor</h2>
-      <p class="lead">A compact, solar-assisted, AI-powered floating robot that detects algae (chlorophyll) and floating plastics in rivers, estuaries and nearshore zones — delivering real-time maps, alerts, and open datasets for research & action.</p>
+  <!-- floating particles -->
+  <div class="particles" id="particles"></div>
 
-      <div class="hero-cta">
-        <button class="btn" onclick="document.querySelector('#overview').scrollIntoView({behavior:'smooth'})">Explore Project</button>
-        <button class="btn secondary" onclick="downloadBrief()">Download Brief</button>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <div class="hero-card">
+        <h2>VORTEX AERO — Floating HySpexBot</h2>
+        <p class="lead">A modular, solar-assisted, Jetson Nano powered autonomous float that performs hyperspectral and acoustic sensing to detect chlorophyll (algal blooms) and floating plastics in real time. Designed for rivers, estuaries, and coastal nearshore zones.</p>
+        <div class="meta">
+          <div class="pill">Edge AI</div>
+          <div class="pill">Hyperspectral 400–1000 nm</div>
+          <div class="pill">Acoustic fusion</div>
+          <div class="pill">MQTT Telemetry</div>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:12px">
+          <button class="btn" onclick="document.querySelector('#overview').scrollIntoView({behavior:'smooth'})">Explore</button>
+          <button class="ghost" onclick="downloadBrief()">Download Brief</button>
+        </div>
+
+        <div style="margin-top:18px" class="muted-small">Prototype estimate: <span class="code">₹40k–₹80k</span> — scalable for fleets.</div>
       </div>
 
-      <div class="tagline">“AI for a Sustainable Blue Planet” — <span style="color:var(--muted)">real-time, reliable, and affordable.</span></div>
-    </div>
-
-    <div class="hero-right fade-in" style="animation-delay:.2s">
-      <div class="vortex-canvas" id="vortex">
-        <!-- particles added by JS -->
-        <div class="vortex-title">VORTEX AERO</div>
+      <div class="vortex-stage">
+        <canvas id="vortexCanvas" width="420" height="420" aria-hidden></canvas>
+        <div class="vortex-label">VORTEX AERO</div>
       </div>
     </div>
   </section>
 
   <!-- MAIN CONTENT -->
   <main>
-    <div class="grid">
-      <div>
-        <!-- Overview -->
-        <section id="overview" class="panel fade-in" style="animation-delay:.3s">
-          <h3>Overview</h3>
-          <p class="muted">Floating HySpexBot (VORTEX AERO) is designed to fill the gap between satellite sensing and manual sampling. It offers a mobile, scalable, and AI-driven approach for nearshore water quality monitoring and plastic detection.</p>
 
-          <div class="accordion">
-            <button onclick="togglePanel(this)">Quick Summary</button>
-            <div class="panel-body">
-              <strong>What it does:</strong> Measures chlorophyll, turbidity, and detects floating plastics. <br>
-              <strong>Why:</strong> Early detection of algae blooms and plastic hotspots prevents ecosystem damage. <br>
-              <strong>Where:</strong> Rivers, estuaries, lakes, and coastal nearshore zones. <br>
-              <strong>Who benefits:</strong> Governments, research institutions, NGOs, aquaculture operators, and local communities.
-            </div>
+    <!-- OVERVIEW -->
+    <section id="overview" class="section">
+      <h3>Abstract & Overview</h3>
+      <p class="muted">VORTEX AERO is an edge-first environmental monitoring platform that combines hyperspectral reflectance (400–1000 nm) with short-range acoustic sensing and AI on NVIDIA Jetson hardware. It estimates chlorophyll-a concentration, maps turbidity, and detects/classifies floating plastics using a fusion model that is robust to turbidity and cloud cover.</p>
 
-            <button onclick="togglePanel(this)">Key Features</button>
-            <div class="panel-body">
-              - Hyperspectral sensing (400–1000 nm).<br>
-              - Short-range acoustic backscatter for turbid conditions.<br>
-              - Edge AI on Jetson Nano for real-time inference.<br>
-              - Solar-assisted battery with energy-aware sensor sequencing.<br>
-              - Cloud dashboard, map tiles, and alerting via MQTT/HTTP.
-            </div>
-          </div>
-        </section>
-
-        <!-- Architecture -->
-        <section id="architecture" class="panel fade-in" style="animation-delay:.35s;margin-top:18px">
-          <h3>System Architecture</h3>
-          <p class="muted">A layered design ensures modularity and reliability: Hardware → Edge Compute → Data Fusion → Cloud & Dashboard.</p>
-
-          <div style="margin-top:12px" class="flow">
-            <div class="step">
-              <div class="chip">Sensors</div>
-              <div class="muted">Hyperspectral, Acoustic, Turbidity, GPS</div>
-            </div>
-            <div style="width:36px;text-align:center;color:var(--muted)">➡</div>
-            <div class="step">
-              <div class="chip">Jetson</div>
-              <div class="muted">Edge inference, fusion, telemetry</div>
-            </div>
-            <div style="width:36px;text-align:center;color:var(--muted)">➡</div>
-            <div class="step">
-              <div class="chip">Cloud</div>
-              <div class="muted">Storage, Dashboard, APIs</div>
-            </div>
-            <div style="width:36px;text-align:center;color:var(--muted)">➡</div>
-            <div class="step">
-              <div class="chip">Alerts</div>
-              <div class="muted">Maps, Notifications, CSV/GeoTIFF</div>
-            </div>
-          </div>
-
-          <h3 style="margin-top:16px">Block Diagram</h3>
-          <div style="padding:10px;border-radius:8px;background:var(--glass-2);border:1px solid rgba(255,255,255,0.02)">
-            <!-- Simple svg block diagram -->
-            <svg width="100%" height="220" viewBox="0 0 1000 220" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#39d6ff"/><stop offset="1" stop-color="#4bf1a6"/></linearGradient>
-              </defs>
-              <rect x="30" y="30" width="220" height="140" rx="12" fill="#022033" stroke="rgba(255,255,255,0.04)"/>
-              <text x="140" y="58" text-anchor="middle" fill="#9fe9ff" font-weight="700" font-size="14">Sensors</text>
-              <text x="140" y="82" fill="#cfeffb" font-size="12" text-anchor="middle">Hyperspectral • Acoustic • GPS</text>
-
-              <rect x="300" y="30" width="220" height="140" rx="12" fill="#022033" stroke="rgba(255,255,255,0.04)"/>
-              <text x="410" y="58" text-anchor="middle" fill="#9fe9ff" font-weight="700" font-size="14">Edge Compute</text>
-              <text x="410" y="82" fill="#cfeffb" font-size="12" text-anchor="middle">Jetson Nano • ML • Fusion</text>
-
-              <rect x="570" y="30" width="220" height="140" rx="12" fill="#022033" stroke="rgba(255,255,255,0.04)"/>
-              <text x="680" y="58" text-anchor="middle" fill="#9fe9ff" font-weight="700" font-size="14">Cloud & Dashboard</text>
-              <text x="680" y="82" fill="#cfeffb" font-size="12" text-anchor="middle">Storage • Maps • APIs</text>
-
-              <path d="M250 100 L300 100" stroke="url(#g1)" stroke-width="4" stroke-linecap="round"/>
-              <path d="M520 100 L570 100" stroke="url(#g1)" stroke-width="4" stroke-linecap="round"/>
-            </svg>
-          </div>
-        </section>
-
-        <!-- ML & Data -->
-        <section id="ml" class="panel fade-in" style="animation-delay:.4s;margin-top:18px">
-          <h3>ML & Data</h3>
-          <p class="muted">Edge-first ML pipeline: preprocess → feature extraction → fusion → inference. Models run on Jetson and are optimized via TensorRT for speed and low power.</p>
-
-          <div class="accordion">
-            <button onclick="togglePanel(this)">Data Sources</button>
-            <div class="panel-body">
-              - Hyperspectral spectra (400–1000 nm), resampled to fixed band vectors.<br>
-              - Acoustic features from short-range ping echoes.<br>
-              - Environmental metadata: turbidity, water temperature, sun angle.<br>
-              - Ground truth: lab-measured chlorophyll and FTIR polymer IDs.
-            </div>
-
-            <button onclick="togglePanel(this)">Model Design</button>
-            <div class="panel-body">
-              - OpticalNet: 1D conv / MLP for spectral features.<br>
-              - AcousticNet: small MLP for echo features.<br>
-              - Fusion layer: attention-based reweighting conditioned on turbidity & sun-angle.<br>
-              - Output: classification (plastic type) + regression (chlorophyll mg/m³).
-            </div>
-
-            <button onclick="togglePanel(this)">Synthetic Dataset</button>
-            <div class="panel-body">
-              A synthetic data generator helps bootstrap training with simulated spectra across turbidity and illumination conditions. Models are then fine-tuned with small in-situ labeled datasets for robust generalization.
-            </div>
-          </div>
-        </section>
-
-        <!-- Business & Impact -->
-        <section id="business" class="panel fade-in" style="animation-delay:.45s;margin-top:18px">
-          <h3>Business Model & Impact</h3>
-          <p class="muted">Our revenue and impact model focuses on data services, fleet leasing, and partnerships for environmental monitoring.</p>
-
+      <div class="two-col" style="margin-top:14px">
+        <div>
+          <h4 style="margin:6px 0">Objectives</h4>
           <ul class="list">
-            <li><strong>DaaS (Data-as-a-Service):</strong> subscription to live maps, alerts and historical analytics.</li>
-            <li><strong>HaaS (Hardware-as-a-Service):</strong> deploy & maintain fleets for governments, aquaculture and NGOs.</li>
-            <li><strong>Calibration & Consulting:</strong> satellite validation and targeted studies for clients.</li>
-            <li><strong>Open Research Tier:</strong> free or low-cost access to academic institutions to foster research and goodwill.</li>
+            <li>Design a compact, stable floating platform for nearshore waters.</li>
+            <li>Integrate hyperspectral + acoustic sensors with Jetson Nano edge processing.</li>
+            <li>Develop ML algorithms for chlorophyll estimation and plastic classification.</li>
+            <li>Implement telemetry, cloud visualization and alerting.</li>
+            <li>Create open-source datasets and operational SOPs.</li>
           </ul>
 
-          <div style="margin-top:12px">
-            <strong>Social Impact:</strong> better pollution response, healthier fisheries, safer drinking water, and empowered local communities with actionable data.
-          </div>
-        </section>
-
-      </div>
-
-      <!-- Right column -->
-      <aside>
-        <div class="panel fade-in" style="animation-delay:.32s">
-          <h3>Prototype Snapshot</h3>
-          <div class="stat" style="margin:10px 0">
-            <div class="icon">🧠</div>
-            <div>
-              <div style="font-weight:700">Jetson Nano</div>
-              <div class="muted">Edge ML / inference</div>
-            </div>
-          </div>
-          <div class="stat" style="margin:10px 0">
-            <div class="icon">🔬</div>
-            <div>
-              <div style="font-weight:700">Hyperspectral</div>
-              <div class="muted">400–1000 nm reflectance</div>
-            </div>
-          </div>
-          <div class="stat" style="margin:10px 0">
-            <div class="icon">📡</div>
-            <div>
-              <div style="font-weight:700">Comm</div>
-              <div class="muted">MQTT / 4G / WiFi</div>
-            </div>
-          </div>
+          <h4 style="margin:12px 0 6px">Applications</h4>
+          <ul class="list">
+            <li>Water quality monitoring for governments and research</li>
+            <li>Plastic hotspot mapping & cleanup prioritization</li>
+            <li>Calibration/validation of satellite ocean color products</li>
+            <li>Aquaculture monitoring and compliance</li>
+          </ul>
         </div>
 
-        <div class="panel fade-in small-list" style="margin-top:18px;animation-delay:.36s">
-          <h3>Bill of Materials (Prototype)</h3>
-          <div class="muted" style="font-size:0.95rem">
-            <ul style="margin:8px 0 0 16px">
-              <li>Jetson Nano (4GB)</li>
-              <li>Mini hyperspectral spectrometer</li>
-              <li>Acoustic transducer + ADC</li>
-              <li>u-blox GPS, IMU</li>
-              <li>LiPo battery + solar panels</li>
-              <li>Hull & catamaran frame</li>
+        <aside>
+          <div class="card">
+            <strong>Expected Outcomes</strong>
+            <ul class="list" style="margin-top:8px">
+              <li>Working prototype for field tests</li>
+              <li>Real-time chlorophyll and plastic detection maps</li>
+              <li>Open dataset of spectral signatures</li>
+              <li>Dockerized Jetson runtime & synthetic data generator</li>
             </ul>
-            <div style="margin-top:8px;font-weight:700">Prototype cost estimate: <span style="color:var(--accent)">₹40k–₹80k</span></div>
           </div>
-        </div>
 
-        <div class="panel fade-in" style="margin-top:18px;animation-delay:.38s">
-          <h3>Timeline (MVP → Pilot)</h3>
-          <ol style="margin:8px 0 0 16px">
-            <li>0–3 months: design & bench tests</li>
-            <li>4–6 months: integration & controlled-field tests</li>
-            <li>7–9 months: model training & site validation</li>
-            <li>10–12 months: pilot deployment & first customers</li>
-          </ol>
-        </div>
+          <div style="height:12px"></div>
 
-        <div class="panel fade-in" style="margin-top:18px;animation-delay:.40s">
-          <h3>Patent-safety Notes</h3>
-          <div class="muted" style="font-size:0.95rem">
-            Focus patent claims on specific method steps and the fusion/attention algorithm rather than broad concepts. Keep lab notebooks and dataset timestamps for proof of novelty.
+          <div class="card">
+            <strong>Quick Links</strong>
+            <div style="margin-top:10px" class="downloads">
+              <div class="asset"><button class="ghost" onclick="downloadSVG('flow')">⬇ Flowchart (SVG)</button></div>
+              <div class="asset"><button class="ghost" onclick="downloadSVG('pcb')">⬇ PCB Wiring (SVG)</button></div>
+              <div class="asset"><button class="ghost" onclick="downloadJSON()">⬇ Dataset Sample (JSON)</button></div>
+            </div>
           </div>
-        </div>
-      </aside>
-    </div>
+        </aside>
+      </div>
+    </section>
 
-    <!-- deep-dive: technical content -->
-    <section class="panel fade-in" style="margin-top:22px;animation-delay:.46s">
-      <h3>Technical Deep-Dive (expandable)</h3>
-      <div class="accordion" style="margin-top:10px">
-        <button onclick="togglePanel(this)">Hardware Wiring & Power Management</button>
-        <div class="panel-body">
-          The electronics bay contains a 12.8V LiFePO4 battery connected to MPPT solar charge. Power rails: 5V (Jetson) via buck, 3.3V for sensors. MCU (STM32/ESP32) handles PWM for ESCs and ADC for acoustic. Use single-point grounding and shielded lines for acoustic analogs.
-        </div>
+    <!-- TECHNICAL -->
+    <section id="tech" class="section">
+      <h3>Technical Architecture</h3>
+      <p class="muted">Modular stack: Sensors → MCU preproc → Jetson edge fusion → Cloud. Data is published via MQTT; models are TensorRT-optimized for FP16/INT8 where possible.</p>
 
-        <button onclick="togglePanel(this)">Software Stack & Docker</button>
-        <div class="panel-body">
-          Ubuntu (JetPack) container with PyTorch/TensorRT, MQTT client, data ingestion daemon, and inference service. Models exported to TorchScript/ONNX and optimized for FP16. Use systemd / Docker for service management.
-        </div>
-
-        <button onclick="togglePanel(this)">ML Training Recipe</button>
-        <div class="panel-body">
-          Train optical networks on resampled 150-band vectors with turbidity augmentation. Combine acoustic features (peak, energy, width, slope) in fusion network. Loss: cross-entropy for classification + MSE for chlorophyll regression. Domain adapt with small in-situ fine-tuning.
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+        <div class="card" style="flex:1;min-width:260px">
+          <strong>Hardware Summary</strong>
+          <ul class="list" style="margin-top:10px">
+            <li>Jetson Nano (4GB) or Xavier NX for higher throughput</li>
+            <li>Hyperspectral spectrometer (400–1000 nm) — USB / UVC interface</li>
+            <li>Acoustic transducer array + low-noise preamp + ADC</li>
+            <li>u-blox GPS + IMU for geotagging & PPS</li>
+            <li>LiFePO4 battery + MPPT solar charger</li>
+          </ul>
         </div>
 
-        <button onclick="togglePanel(this)">Field Calibration Protocol</button>
-        <div class="panel-body">
-          Pre-deployment: Spectralon white reference, dark current capture. In-field: collect paired water samples for lab Chl-a extraction (acetone method) and FTIR polymer ID. Record environmental meta (sun angle, wind, turbidity).
+        <div class="card" style="flex:1;min-width:260px">
+          <strong>Software & Edge Stack</strong>
+          <ul class="list" style="margin-top:10px">
+            <li>Docker image for Jetson with PyTorch & JetPack-compatible wheels</li>
+            <li>Inference service (MQTT in/out), telemetry daemon, and local DB</li>
+            <li>Model formats: TorchScript / ONNX → TensorRT</li>
+            <li>MCU firmware for acoustic ADC & feature extraction (STM32/ESP32)</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <!-- contact -->
-    <section id="contact" class="panel fade-in" style="margin-top:18px;animation-delay:.48s">
-      <h3>Get Involved</h3>
-      <p class="muted">Want the project files, synthetic dataset generator, Docker image, or PCB wiring diagram? Contact us and we’ll share repositories and step-by-step guides.</p>
+    <!-- ML & DATA -->
+    <section id="ml" class="section">
+      <h3>ML Pipeline & Data</h3>
+      <p class="muted">We use a two-branch fusion model: spectral branch (1D CNN / ResNet-1D) and acoustic branch (MLP). Fusion uses attention conditioned on turbidity and sun-angle. Training uses synthetic + field-labelled data; domain adaptation via small in-situ fine-tuning.</p>
 
-      <form onsubmit="event.preventDefault(); alert('Thanks — your interest is noted. (This demo form does not send data.)')">
-        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
-          <input type="text" placeholder="Your name" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6f7ff">
-          <input type="email" placeholder="Email" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6f7ff">
+      <div class="accordion" style="margin-top:14px">
+        <button class="acc-btn" onclick="toggleAcc(this)">Data Sources & Ground-truth (patent-friendly)</button>
+        <div class="acc-body">
+          <strong>Patent-friendly wording:</strong> "A data acquisition procedure comprising capturing surface spectral reflectance across 400–1000 nm, recording concomitant acoustic echo signatures, and annotating samples with laboratory-derived chlorophyll-a concentrations and polymer identifications using FTIR for training and validation of a fusion classifier."
         </div>
-        <textarea placeholder="Message (optional)" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);height:88px;background:transparent;color:#e6f7ff"></textarea>
-        <div style="display:flex;gap:10px;margin-top:10px">
-          <button class="btn" onclick="alert('Demo: files will be prepared upon request')">Request Files</button>
-          <button class="btn secondary" onclick="document.querySelector('html').scrollTo({top:0,behavior:'smooth'})">Back to top</button>
+
+        <button class="acc-btn" onclick="toggleAcc(this)">Model Design (patent-friendly)</button>
+        <div class="acc-body">
+          <strong>Patent-friendly wording:</strong> "A sensor-fusion inference method employing a spectral feature extractor and an acoustic feature extractor followed by an attention-based fusion block that outputs (i) a regression estimate for chlorophyll concentration and (ii) a classification label for floating polymer type."
         </div>
-      </form>
+
+        <button class="acc-btn" onclick="toggleAcc(this)">Synthetic Data Generator</button>
+        <div class="acc-body">
+          The synthetic generator simulates spectra under varying turbidity and illumination, and produces acoustic features based on expected echo profiles. This accelerates initial model training and reduces field lab costs.
+        </div>
+      </div>
+    </section>
+
+    <!-- BUSINESS -->
+    <section id="business" class="section">
+      <h3>Business Model & Impact</h3>
+      <p class="muted">We propose a hybrid revenue model: Data-as-a-Service (DaaS) subscriptions for analytics and alerts, Hardware-as-a-Service (HaaS) for fleet deployments, and calibration/consulting services for institutions and satellite providers.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px">
+        <div class="card"><strong>Stakeholders</strong><ul class="list"><li>Govt. water boards</li><li>Environmental NGOs</li><li>Research institutions</li><li>Aquaculture operators</li></ul></div>
+        <div class="card"><strong>Revenue Streams</strong><ul class="list"><li>Subscription data access</li><li>Fleet leasing + maintenance</li><li>One-time hardware sales & training</li></ul></div>
+        <div class="card"><strong>Social Impact</strong><ul class="list"><li>Faster response to algal blooms</li><li>Evidence-based cleanup prioritization</li><li>Accessible datasets for education</li></ul></div>
+      </div>
+    </section>
+
+    <!-- JETSON DOCKER SUMMARY -->
+    <section id="jetson" class="section">
+      <h3>Jetson Docker Image — Quick Summary</h3>
+      <p class="muted">Use a JetPack-compatible base image and install an L4T PyTorch wheel matching your JetPack version. The runtime includes: Python 3, PyTorch (L4T wheel), TorchVision (matching build), ONNX, TensorRT/TF TRTexec for conversion, OpenCV, paho-mqtt. Provide a model path and an inference service to subscribe to spectral and acoustic topics and publish detections.</p>
+
+      <pre class="code">
+// Build example (run on Jetson with wheel present):
+docker build --build-arg PYTORCH_WHEEL=./torch-*.whl -t vorte-x:edge .
+docker run --rm --gpus all --device=/dev/ttyUSB0 --network host -v /opt/hyspex:/app vorte-x:edge
+      </pre>
+    </section>
+
+    <!-- TECHNICAL DEEP DIVE & FIRMWARE -->
+    <section id="deep" class="section">
+      <h3>Technical Deep-Dive & Firmware Pseudocode</h3>
+
+      <div class="accordion">
+        <button class="acc-btn" onclick="toggleAcc(this)">MCU Firmware — Acoustic ADC & Feature Extraction (patent-friendly)</button>
+        <div class="acc-body">
+          <strong>Patent-friendly wording:</strong> "An embedded method where acoustic transducers are excited, received echo signals are sampled via DMA-driven ADC, and per-ping features (peak amplitude, signal energy, width, spectral slope, kurtosis) are computed and transmitted to an edge processor for fusion."
+        </div>
+
+        <button class="acc-btn" onclick="toggleAcc(this)">Field Calibration Protocol</button>
+        <div class="acc-body">
+          Pre-deployment calibration uses a Spectralon white reference for reflectance calibration, dark current capture, and paired lab samples for chlorophyll-a via acetone extraction. Maintain calibration logs and timestamps for reproducibility.
+        </div>
+
+        <button class="acc-btn" onclick="toggleAcc(this)">Patent-safety Guidance</button>
+        <div class="acc-body">
+          For patent claims, target specific algorithms (e.g., turbidity-conditioned attention fusion), system timing methods, and distinct data-processing steps. Avoid claiming broad natural phenomena or general sensor use.
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT & SNIPPETS -->
+    <section id="contact" class="section">
+      <h3>Contact & Deliverables</h3>
+      <p class="muted">Request the full repository, Docker context, synthetic dataset, and PCB wiring. We provide deployment guides for Jetson devices and calibration checklists.</p>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+        <div style="flex:1;min-width:260px">
+          <label style="display:block;margin-bottom:8px;font-weight:700">Generate a Text Snippet (AI-like response)</label>
+          <div style="display:flex;gap:8px">
+            <select id="snippetType" style="flex:1;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)">
+              <option value="alert">Alert / Field</option>
+              <option value="patent">Patent-friendly phrasing</option>
+              <option value="summary">Executive summary (short)</option>
+              <option value="deploy">Deployment checklist</option>
+            </select>
+            <button class="btn" onclick="makeSnippet()">Generate</button>
+          </div>
+
+          <div id="snippet" style="margin-top:12px;padding:12px;border-radius:8px;background:rgba(0,0,0,0.25);min-height:96px;color:var(--accent-2);font-family:monospace"></div>
+        </div>
+
+        <div style="flex:1;min-width:260px">
+          <label style="display:block;margin-bottom:8px;font-weight:700">Request Files</label>
+          <form onsubmit="event.preventDefault(); alert('Demo: request noted. We will share links upon real deployment.')">
+            <input placeholder="Your name" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)"/>
+            <input placeholder="Email" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);margin-top:8px"/>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="btn" type="submit">Request</button>
+              <button class="ghost" type="button" onclick="downloadAll()">Download All Assets</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
 
   </main>
 
   <footer>
-    <div>© <span style="opacity:.9">VORTEX AERO</span> • <span class="tag">AI for a Sustainable Blue Planet</span></div>
-    <div style="opacity:.7">Made with care • Jetson Nano • Hyperspectral • Acoustic fusion</div>
+    <div>© 2025 VORTEX AERO — AI for a Sustainable Blue Planet</div>
   </footer>
 
-  <script>
-    // small utilities
-    function togglePanel(btn){
-      const next = btn.nextElementSibling;
-      if(!next) return;
-      const shown = next.style.display === 'block';
-      next.style.display = shown ? 'none' : 'block';
-      btn.style.background = shown ? 'linear-gradient(90deg, rgba(255,255,255,0.01), transparent)' : 'linear-gradient(90deg, rgba(57,214,255,0.06), rgba(75,241,166,0.03))';
-      btn.style.color = shown ? 'var(--muted)' : '#011423';
-    }
+<script>
+/* -------------------------
+   BOOT SEQUENCE
+   ------------------------- */
+(function boot(){
+  const bar = document.getElementById('bootBar');
+  const ring = document.getElementById('bootRing');
+  let pct = 0;
+  const id = setInterval(()=>{
+    pct += Math.random()*8 + 4;
+    if(pct>=100){ pct=100; clearInterval(id); finishBoot() }
+    bar.style.width = pct + '%';
+    ring.style.transform = 'rotate(' + (pct*3.6) + 'deg)';
+  }, 220);
 
-    // create vortex particles
-    (function createVortex(){
-      const box = document.getElementById('vortex');
-      if(!box) return;
-      const w = box.clientWidth, h = box.clientHeight;
-      const center = {x:w/2, y:h/2};
+  function finishBoot(){
+    setTimeout(()=> {
+      const boot = document.getElementById('boot');
+      boot.style.transition = 'opacity 0.9s ease';
+      boot.style.opacity = 0;
+      setTimeout(()=> boot.style.display = 'none', 1000);
+      // animate hero letters after boot finish
+      startVortex();
+      initParticles();
+    }, 700);
+  }
+})();
 
-      const PARTICLES = 28;
-      for(let i=0;i<PARTICLES;i++){
-        const el = document.createElement('div');
-        el.className = 'particle ' + (i%3===0 ? 'alt' : '');
-        box.appendChild(el);
-        animateParticle(el, i);
-      }
+/* -------------------------
+   VORTEX ANIMATION (Canvas)
+   - particle vortex with per-letter ripple
+   ------------------------- */
+const canvas = document.getElementById('vortexCanvas');
+const ctx = canvas.getContext('2d');
+let W = canvas.width, H = canvas.height;
+let parts = [];
+function rand(min,max){return Math.random()*(max-min)+min}
 
-      function animateParticle(el, idx){
-        const R = 120 + (idx%6)*6;
-        const speed = 7000 + Math.random()*7000;
-        const angleOffset = Math.random()*Math.PI*2;
-        const size = 4 + (idx%5);
-        el.style.width = size + 'px'; el.style.height = size + 'px';
-
-        let start = performance.now();
-        function frame(t){
-          const dt = (t - start);
-          const theta = (dt / speed) * Math.PI*2 + angleOffset;
-          const ease = (Math.sin(dt/700 + idx) + 1)/2 * 0.25 + 0.75;
-          const rx = R * (0.7 + 0.3 * Math.sin(dt/2000 + idx));
-          const x = center.x + Math.cos(theta) * rx * ease - size/2;
-          const y = center.y + Math.sin(theta) * (R*0.45) * ease - size/2;
-          el.style.transform = `translate(${x}px, ${y}px) scale(${0.8 + 0.4*Math.sin(dt/500 + idx)})`;
-          el.style.opacity = 0.5 + 0.5*Math.cos(dt/1300 + idx);
-          requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
-      }
-    })();
-
-    // download brief (generate a small text blob)
-    function downloadBrief(){
-      const text = `VORTEX AERO — Project Brief\n\nFloating HySpexBot: AI-powered floating platform for chlorophyll & plastic detection. Visit site for full details.`;
-      const blob = new Blob([text], {type:'text/plain'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'VORTEX_AERO_brief.txt'; document.body.appendChild(a); a.click();
-      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 3500);
-    }
-
-    // fade-in elements on load
-    window.addEventListener('load', ()=>{
-      document.querySelectorAll('.fade-in').forEach((el,i)=>{
-        el.style.animationDelay = (0.08*i)+'s';
-        el.style.animation = `fadeIn .9s ease forwards ${0.08*i}s`;
-      });
+function startVortex(){
+  // generate particles
+  parts = [];
+  const N = 72;
+  for(let i=0;i<N;i++){
+    const a = Math.random()*Math.PI*2;
+    const r = rand(30,170);
+    const size = rand(2,6);
+    parts.push({
+      a0:a, r0:r, size:size,
+      speed:rand(0.0006,0.0025), phase:rand(0,Math.PI*2),
+      hue: 190 + Math.random()*120
     });
+  }
+  // animate letters - create DOM letters
+  createLetterElements();
+  animate();
+}
 
-    // smooth scroll for nav
-    document.querySelectorAll('nav a').forEach(a=>{
-      a.addEventListener('click', (e)=>{
-        e.preventDefault();
-        const href = a.getAttribute('href');
-        const el = document.querySelector(href);
-        if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
-      });
-    });
-  </script>
+function animate(t){
+  ctx.clearRect(0,0,W,H);
+  const cx = W/2, cy = H/2;
+  // draw soft radial background
+  const g = ctx.createRadialGradient(cx,cy,10,cx,cy,240);
+  g.addColorStop(0,'rgba(57,214,255,0.06)');
+  g.addColorStop(0.4,'rgba(75,241,166,0.02)');
+  g.addColorStop(1,'rgba(2,8,14,0)');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+  // draw orbiting particles
+  parts.forEach((p,idx)=>{
+    const time = (t||0);
+    const theta = p.a0 + time * p.speed + Math.sin(time/1200 + p.phase)*0.08;
+    const rad = p.r0 * (0.9 + 0.08*Math.sin(time/700 + idx));
+    const x = cx + Math.cos(theta)*rad;
+    const y = cy + Math.sin(theta)*(rad*0.6);
+    const hue = p.hue;
+    const size = p.size * (1 + 0.3*Math.sin(time/500 + idx));
+    ctx.beginPath();
+    ctx.fillStyle = 'hsla(' + hue + ',90%,60%,' + (0.55 + 0.4*Math.cos(time/900 + idx)) + ')';
+    ctx.arc(x,y,size,0,Math.PI*2);
+    ctx.fill();
+    // subtle tail
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(x,y);
+    ctx.stroke();
+  });
+
+  // central swirl
+  for(let k=0;k<6;k++){
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(57,214,255,' + (0.03 + 0.02*Math.sin((t||0)/800 + k)) + ')';
+    ctx.lineWidth = 1.5;
+    ctx.arc(cx,cy,26 + k*12, (t||0)/1400 + k, (t||0)/1400 + Math.PI*1.7);
+    ctx.stroke();
+  }
+
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', ()=>{ W = canvas.width = canvas.clientWidth; H = canvas.height = canvas.clientHeight; });
+
+/* -------------------------
+   LETTER ELEMENTS (DOM) - crazy per-letter physics/hover
+   ------------------------- */
+function createLetterElements(){
+  const wrap = document.createElement('div');
+  wrap.className = 'vortex-title-wrap';
+  const heroStage = document.querySelector('.vortex-stage');
+  // remove existing label and insert letters absolutely
+  const label = document.querySelector('.vortex-label');
+  label.style.display = 'none';
+
+  const title = 'VORTEX AERO';
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.left = '50%';
+  container.style.top = '50%';
+  container.style.transform = 'translate(-50%,-8%)';
+  container.style.display = 'flex';
+  container.style.gap = '8px';
+  container.style.zIndex = 4;
+  heroStage.appendChild(container);
+
+  for(let i=0;i<title.length;i++){
+    const ch = title[i];
+    const span = document.createElement('div');
+    span.className = 'v-letter';
+    span.textContent = ch;
+    span.style.opacity = ch.trim() ? 0.98 : 0.25;
+    container.appendChild(span);
+    // animate using JS timeline (stagger)
+    setTimeout(()=> {
+      span.animate([
+        { transform:'translateY(30px) rotate(-30deg) scale(.6)', opacity:0.0 },
+        { transform:'translateY(0px) rotate(0deg) scale(1.0)', opacity:1.0 }
+      ], { duration: 800, easing: 'cubic-bezier(.2,.9,.2,1)' });
+    }, i*70);
+    // hover effect
+    span.onmouseenter = ()=> span.animate([
+      { transform:'scale(1) rotate(0deg)'},
+      { transform:'scale(1.45) rotate(12deg)'}
+    ], { duration:400, fill:'forwards', easing:'ease-out' });
+    span.onmouseleave = ()=> span.animate([
+      { transform:'scale(1.45) rotate(12deg)'},
+      { transform:'scale(1) rotate(0deg)'}
+    ], { duration:350, fill:'forwards', easing:'ease-in' });
+  }
+}
+
+/* -------------------------
+   PARTICLES BACKGROUND
+   ------------------------- */
+function initParticles(){
+  const root = document.getElementById('particles');
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const colors = ['rgba(57,214,255,0.08)','rgba(75,241,166,0.06)','rgba(138,107,255,0.06)'];
+  for(let i=0;i<28;i++){
+    const el = document.createElement('div');
+    el.className='particle';
+    const size = Math.random()*200 + 30;
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.borderRadius = (size/2)+'px';
+    el.style.left = Math.random()*W + 'px';
+    el.style.top = Math.random()*H + 'px';
+    el.style.background = colors[i%colors.length];
+    el.style.transform = 'translate3d(0,0,0)';
+    root.appendChild(el);
+    // animate via FX
+    (function(a){
+      const dur = 16000 + Math.random()*24000;
+      const dx = (Math.random()-0.5)*600;
+      const dy = (Math.random()-0.5)*400;
+      a.animate([{transform:'translate(0px,0px)'},{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0px,0px)'}], {duration:dur,iterations:Infinity,delay:Math.random()*-10000,easing:'ease-in-out'});
+    })(el);
+  }
+}
+
+/* -------------------------
+   ACCORDION
+   ------------------------- */
+function toggleAcc(btn){
+  const body = btn.nextElementSibling;
+  if(!body) return;
+  const shown = body.style.display === 'block';
+  body.style.display = shown ? 'none' : 'block';
+  btn.style.background = shown ? 'transparent' : 'linear-gradient(90deg,var(--accent),var(--accent-2))';
+  btn.style.color = shown ? 'var(--muted)' : '#021';
+}
+
+/* -------------------------
+   THEME TOGGLE
+   ------------------------- */
+const tgl = document.getElementById('themeToggle');
+let theme = localStorage.getItem('vortex_theme') || 'dark';
+if(theme==='light') document.documentElement.classList.add('light');
+tgl.addEventListener('click', ()=>{
+  document.documentElement.classList.toggle('light');
+  theme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+  localStorage.setItem('vortex_theme', theme);
+});
+
+/* -------------------------
+   DOWNLOAD GENERATORS
+   - Embeds SVG flowchart and PCB wiring files and downloads
+   ------------------------- */
+function downloadSVG(kind){
+  let svg = '';
+  if(kind==='flow'){
+    svg = `<?xml version="1.0" encoding="UTF-8"?>
+    <svg xmlns='http://www.w3.org/2000/svg' width='1000' height='360' viewBox='0 0 1000 360'>
+      <defs><linearGradient id='g' x1='0' x2='1'><stop offset='0' stop-color='#39d6ff'/><stop offset='1' stop-color='#4bf1a6'/></linearGradient></defs>
+      <rect x='10' y='30' width='280' height='140' rx='12' fill='#022033' stroke='rgba(255,255,255,0.04)'/>
+      <text x='150' y='62' text-anchor='middle' fill='#9fe9ff' font-weight='700' font-size='14'>Sensors</text>
+      <text x='150' y='86' text-anchor='middle' fill='#cfeffb' font-size='12'>Hyperspectral • Acoustic • GPS</text>
+      <rect x='360' y='30' width='280' height='140' rx='12' fill='#022033' stroke='rgba(255,255,255,0.04)'/>
+      <text x='500' y='62' text-anchor='middle' fill='#9fe9ff' font-weight='700' font-size='14'>Edge Compute</text>
+      <text x='500' y='86' text-anchor='middle' fill='#cfeffb' font-size='12'>Jetson Nano • ML • Fusion</text>
+      <rect x='710' y='30' width='280' height='140' rx='12' fill='#022033' stroke='rgba(255,255,255,0.04)'/>
+      <text x='850' y='62' text-anchor='middle' fill='#9fe9ff' font-weight='700' font-size='14'>Cloud</text>
+      <text x='850' y='86' text-anchor='middle' fill='#cfeffb' font-size='12'>Storage • Maps • APIs</text>
+      <path d='M290 100 L360 100' stroke='url(#g)' stroke-width='4' stroke-linecap='round'/>
+      <path d='M640 100 L710 100' stroke='url(#g)' stroke-width='4' stroke-linecap='round'/>
+    </svg>`;
+    downloadData(svg,'vortex_flowchart.svg','image/svg+xml');
+  } else {
+    svg = `<?xml version="1.0" encoding="UTF-8"?>
+    <svg xmlns='http://www.w3.org/2000/svg' width='1000' height='600' viewBox='0 0 1000 600'>
+      <rect x='20' y='20' rx='14' width='960' height='560' fill='#02121a' stroke='#163140' />
+      <text x='500' y='60' fill='#9fe9ff' font-size='18' text-anchor='middle' font-weight='700'>PCB Wiring — HySpexBot (Schematic)</text>
+      <line x1='100' y1='140' x2='300' y2='140' stroke='#9fe9ff' stroke-width='2' />
+      <text x='100' y='130' fill='#cfeffb' font-size='12'>Battery (12.8V)</text>
+      <rect x='320' y='110' rx='6' width='160' height='60' fill='#022033' stroke='#0f3a45'/>
+      <text x='400' y='140' fill='#9fe9ff' font-size='12' text-anchor='middle'>Buck Converter (5V)</text>
+      <path d='M220 140 L320 140' stroke='#39d6ff' stroke-width='2'/>
+      <text x='520' y='180' fill='#cfeffb' font-size='12'>Jetson Nano (5V input)</text>
+      <rect x='480' y='150' rx='6' width='220' height='100' fill='#022033' stroke='#0f3a45' />
+      <text x='590' y='190' fill='#9fe9ff' font-size='12' text-anchor='middle'>Jetson Nano</text>
+      <text x='590' y='210' fill='#cfeffb' font-size='11' text-anchor='middle'>USB: Spectrometer | LTE Modem</text>
+      <line x1='590' y1='250' x2='590' y2='340' stroke='#39d6ff' stroke-width='2'/>
+      <rect x='520' y='340' rx='6' width='140' height='60' fill='#022033' stroke='#0f3a45'/>
+      <text x='590' y='375' fill='#cfeffb' font-size='12' text-anchor='middle'>MCU (ADC / PWM)</text>
+    </svg>`;
+    downloadData(svg,'vortex_pcb_wiring.svg','image/svg+xml');
+  }
+}
+function downloadData(data,filename,mimetype){
+  const blob = new Blob([data], {type:mimetype});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },1500);
+}
+
+/* -------------------------
+   Download sample JSON dataset
+   ------------------------- */
+function downloadJSON(){
+  const sample = {
+    bands: Array.from({length:150}, (_,i)=>400 + (i*(600/149))),
+    samples: [
+      {id:1,label:'water',turbidity:2.1,chl:0.6, spectrum: Array.from({length:150}, ()=>Math.random()*0.05+0.1)},
+      {id:2,label:'organic',turbidity:6.2,chl:18.7, spectrum: Array.from({length:150}, ()=>Math.random()*0.3+0.2)},
+      {id:3,label:'PE',turbidity:1.6,chl:0.03, spectrum: Array.from({length:150}, ()=>Math.random()*0.2+0.4)}
+    ]
+  };
+  const blob = new Blob([JSON.stringify(sample,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'synthetic_sample.json'; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },1500);
+}
+
+/* -------------------------
+   Download all assets zip (lightweight bundle by creating blobs)
+   ------------------------- */
+function downloadAll(){
+  // bundle a few small files as separate downloads (no zip)
+  downloadData(`VORTEX AERO — Brief\n\nThis bundle contains sample assets for demonstration.`,'VORTEX_AERO_brief.txt','text/plain');
+  // create small dockerfile snippet
+  const docker = `# Jetson Dockerfile snippet\nFROM nvcr.io/nvidia/l4t-base\n# install deps...`;
+  downloadData(docker,'Dockerfile_snippet.txt','text/plain');
+  // flow + pcb
+  downloadSVG('flow'); setTimeout(()=> downloadSVG('pcb'), 600);
+  setTimeout(()=> downloadJSON(), 1200);
+}
+
+/* -------------------------
+   Download brief button
+   ------------------------- */
+function downloadBrief(){
+  const brief = `VORTEX AERO — Project Brief\n\nFloating HySpexBot: Edge-AI floating platform for chlorophyll & plastic detection. Contact team for full repo.`;
+  downloadData(brief,'VORTEX_BRIEF.txt','text/plain');
+}
+
+/* -------------------------
+   SNIPPET GENERATOR (AI-like)
+   ------------------------- */
+function makeSnippet(){
+  const t = document.getElementById('snippetType').value;
+  const out = document.getElementById('snippet');
+  if(t==='alert'){
+    const alerts = [
+      '[ALERT] 2025-10-22T07:34Z | Location: 14.02,73.88 | Chlorophyll: 22 mg/m3 — rapid increase detected. Recommend sample collection.',
+      '[ALERT] 2025-10-22T08:10Z | Location: 14.05,73.80 | Plastic cluster detected (PET) — density est. 0.18 items/m2.'
+    ];
+    out.textContent = alerts[Math.floor(Math.random()*alerts.length)];
+  } else if(t==='patent'){
+    out.textContent = `Patent phrasing:\n"A method for combined optical and acoustic detection comprising: acquiring spectral reflectance across the 400–1000 nm band; acquiring acoustic echo data; performing pre-processing; applying a turbidity-conditioned attention fusion network to output a chlorophyll concentration estimate and a polymer classification."`;
+  } else if(t==='summary'){
+    out.textContent = `Executive summary (short): VORTEX AERO is a portable floating system that detects algae and plastics in real-time using hyperspectral and acoustic fusion on edge AI. It provides maps, alerts and a scalable dataset service.`;
+  } else {
+    out.textContent = `Deployment checklist:\n- Verify JetPack + PyTorch wheel compatibility\n- Install Docker image on Jetson\n- Calibrate spectrometer with Spectralon target\n- Configure MQTT & cloud endpoints\n- Perform field validation with paired lab samples`;
+  }
+}
+
+/* -------------------------
+   INIT: set canvas size and start when boot finished
+   ------------------------- */
+(function init(){
+  const resize = ()=>{ canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; W = canvas.width; H = canvas.height; };
+  window.addEventListener('resize', resize);
+  resize();
+  // if boot already hidden (rare), start immediately
+  setTimeout(()=> {
+    if(document.getElementById('boot').style.display==='none') { startVortex(); initParticles(); }
+  }, 900);
+})();
+</script>
 
 </body>
 </html>
